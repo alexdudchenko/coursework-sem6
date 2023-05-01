@@ -1,6 +1,6 @@
 package alex.dudchenko;
 
-import alex.dudchenko.dijkstra.parallel.DijkstraAlgorithmParallel;
+import alex.dudchenko.dijkstra.parallel.DijkstraParallelAlgorithm;
 import alex.dudchenko.dijkstra.sequential.DijkstraSequentialAlgorithm;
 import alex.dudchenko.exception.InvalidInputDataException;
 import alex.dudchenko.model.Graph;
@@ -51,19 +51,19 @@ public class Main {
         DijkstraSequentialAlgorithm dijkstraSequential = new DijkstraSequentialAlgorithm(graph);
         Instant start = Instant.now();
         List<Integer> results = dijkstraSequential.solve();
-        Instant finish = Instant.now();
-        long time = Duration.between(start, finish).toMillis();
-        System.out.println(time);
+        Instant end = Instant.now();
+        long time = Duration.between(start, end).toMillis();
+        System.out.println("Total time, millis = " + time);
         return results;
     }
 
     public static List<Integer> runAndMeasureParallelDijkstra(Graph graph, int numberOfThreads) {
-        DijkstraAlgorithmParallel dijkstraParallel = new DijkstraAlgorithmParallel(graph, numberOfThreads);
+        DijkstraParallelAlgorithm dijkstraParallel = new DijkstraParallelAlgorithm(graph, numberOfThreads);
         Instant start = Instant.now();
         List<Integer> results = dijkstraParallel.solve();
-        Instant finish = Instant.now();
-        long time = Duration.between(start, finish).toMillis();
-        System.out.println(time);
+        Instant end = Instant.now();
+        long time = Duration.between(start, end).toMillis();
+        System.out.println("Total time, millis = " + time);
         return results;
     }
 }

@@ -17,7 +17,6 @@ public class GraphUtils {
     }
 
     public static void generateGraphMatrix(int numberOfNodes, int density) throws IOException {
-
         File file = new File(FILE_NAME);
         try (BufferedWriter bufferedWriter = Files.newBufferedWriter(file.toPath())) {
             bufferedWriter.append(String.valueOf(numberOfNodes)).append(IOUtils.SPACE_SEPARATOR)

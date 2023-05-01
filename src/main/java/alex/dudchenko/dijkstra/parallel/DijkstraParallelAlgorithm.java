@@ -9,7 +9,7 @@ import java.util.*;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class DijkstraAlgorithmParallel implements DijkstraAlgorithm {
+public class DijkstraParallelAlgorithm implements DijkstraAlgorithm {
 
     private final Graph graph;
     private final Set<Integer> visited;
@@ -19,7 +19,7 @@ public class DijkstraAlgorithmParallel implements DijkstraAlgorithm {
     private final Vertex currentVertex;
     private final int numberOfThreads;
 
-    public DijkstraAlgorithmParallel(Graph graph, int numberOfThreads) {
+    public DijkstraParallelAlgorithm(Graph graph, int numberOfThreads) {
         this.graph = graph;
         this.numberOfThreads = numberOfThreads;
         this.distances = new HashMap<>();
@@ -59,8 +59,8 @@ public class DijkstraAlgorithmParallel implements DijkstraAlgorithm {
     private List<Thread> breakIntoTasks() {
         List<Thread> threads = new ArrayList<>();
 
-        ReduceRunnable reduceRunnable = new ReduceRunnable(queues, isFinished, visited, currentVertex);
-        CyclicBarrier cyclicBarrier = new CyclicBarrier(numberOfThreads, reduceRunnable);
+        ReduceOperationRunnable reduceOperationRunnable = new ReduceOperationRunnable(queues, isFinished, visited, currentVertex);
+        CyclicBarrier cyclicBarrier = new CyclicBarrier(numberOfThreads, reduceOperationRunnable);
         int start;
         int end = 0;
         int chunk = graph.getNumberOfNodes() / numberOfThreads;
@@ -87,14 +87,14 @@ public class DijkstraAlgorithmParallel implements DijkstraAlgorithm {
         return threads;
     }
 
-    public static class ReduceRunnable implements Runnable {
+    public static class ReduceOperationRunnable implements Runnable {
 
         private final List<PriorityQueue<Vertex>> queues;
         private final AtomicBoolean isFinished;
         private final Set<Integer> visited;
         private final Vertex currentVertex;
 
-        public ReduceRunnable(List<PriorityQueue<Vertex>> queues, AtomicBoolean isFinished, Set<Integer> visited, Vertex currentVertex) {
+        public ReduceOperationRunnable(List<PriorityQueue<Vertex>> queues, AtomicBoolean isFinished, Set<Integer> visited, Vertex currentVertex) {
             this.queues = queues;
             this.isFinished = isFinished;
             this.visited = visited;
