@@ -13,7 +13,7 @@ import java.util.List;
 public class ParallelDijkstraAlgorithmTest {
 
     private static final int numberOfNodes = 1000;
-    private static final int numberOfThreads = 2;
+    private static final int numberOfThreads = 6;
 
     @SneakyThrows
     @Test

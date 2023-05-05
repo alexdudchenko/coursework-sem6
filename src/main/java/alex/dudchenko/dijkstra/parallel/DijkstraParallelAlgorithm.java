@@ -2,6 +2,7 @@ package alex.dudchenko.dijkstra.parallel;
 
 import alex.dudchenko.dijkstra.DijkstraAlgorithm;
 import alex.dudchenko.exception.InterruptedRuntimeException;
+import alex.dudchenko.model.Edge;
 import alex.dudchenko.model.Graph;
 import alex.dudchenko.model.Vertex;
 import lombok.Getter;
@@ -20,7 +21,7 @@ public class DijkstraParallelAlgorithm implements DijkstraAlgorithm {
     private final Vertex currentVertex;
     private final int numberOfThreads;
     @Getter
-    private final Queue<Integer> path = new ArrayDeque<>();
+    private final Deque<Integer> path = new ArrayDeque<>();
 
     public DijkstraParallelAlgorithm(Graph graph, int numberOfThreads) {
         this.graph = graph;
@@ -57,6 +58,8 @@ public class DijkstraParallelAlgorithm implements DijkstraAlgorithm {
                 throw new InterruptedRuntimeException(e.getMessage());
             }
         }
+
+        if (!path.contains(graph.getNumberOfNodes() - 1)) path.push(graph.getNumberOfNodes() - 1);
         return new LinkedList<>(distances.values());
     }
 
@@ -64,12 +67,12 @@ public class DijkstraParallelAlgorithm implements DijkstraAlgorithm {
         List<Thread> threads = new ArrayList<>();
 
         ReduceOperationRunnable reduceOperationRunnable = new ReduceOperationRunnable(queues, isFinished,
-                visited, currentVertex, path);
+                visited, currentVertex);
         CyclicBarrier cyclicBarrier = new CyclicBarrier(numberOfThreads, reduceOperationRunnable);
         int start;
         int end = 0;
-        int chunk = graph.getNumberOfNodes() / numberOfThreads;
-        int leftover = graph.getNumberOfNodes() % numberOfThreads;
+        int chunk = graph.getEdgesList().size() / numberOfThreads;
+        int leftover = graph.getEdgesList().size() % numberOfThreads;
 
         for (int i = 0; i < numberOfThreads; i++) {
             start = end;
@@ -78,6 +81,7 @@ public class DijkstraParallelAlgorithm implements DijkstraAlgorithm {
                 end++;
                 leftover--;
             }
+            List<Edge> list = graph.getEdgesList().subList(start, end);
 
             GraphPieceDto dto = new GraphPieceDto();
             dto.setGraph(graph);
@@ -86,7 +90,7 @@ public class DijkstraParallelAlgorithm implements DijkstraAlgorithm {
             dto.setVisited(visited);
             dto.setCurrentVertex(currentVertex);
 
-            Thread dijThread = new DijkstraThread(dto, cyclicBarrier, queues.get(i), distances, isFinished);
+            Thread dijThread = new DijkstraThread(dto, cyclicBarrier, queues.get(i), distances, isFinished, path, list);
             threads.add(dijThread);
         }
         return threads;
@@ -98,15 +102,13 @@ public class DijkstraParallelAlgorithm implements DijkstraAlgorithm {
         private final AtomicBoolean isFinished;
         private final Set<Integer> visited;
         private final Vertex currentVertex;
-        private final Queue<Integer> path;
 
         public ReduceOperationRunnable(List<PriorityQueue<Vertex>> queues, AtomicBoolean isFinished,
-                                       Set<Integer> visited, Vertex currentVertex, Queue<Integer> path) {
+                                       Set<Integer> visited, Vertex currentVertex) {
             this.queues = queues;
             this.isFinished = isFinished;
             this.visited = visited;
             this.currentVertex = currentVertex;
-            this.path = path;
         }
 
         @Override
@@ -131,7 +133,6 @@ public class DijkstraParallelAlgorithm implements DijkstraAlgorithm {
                     visited.add(minVertex.getNode());
                     currentVertex.setNode(minVertex.getNode());
                     currentVertex.setDistance(minVertex.getDistance());
-                    path.add(currentVertex.getNode());
                     queues.get(queueIndex).remove();
                     return;
                 } else {

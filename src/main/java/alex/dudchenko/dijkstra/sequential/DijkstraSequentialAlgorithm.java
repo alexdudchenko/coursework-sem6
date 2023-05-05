@@ -41,6 +41,7 @@ public class DijkstraSequentialAlgorithm implements DijkstraAlgorithm {
             }
 
         }
+        if (!path.contains(graph.getNumberOfNodes() - 1)) path.push(graph.getNumberOfNodes() - 1);
         return new ArrayList<>(distances.values());
     }
 

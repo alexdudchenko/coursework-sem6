@@ -71,7 +71,11 @@ public class Main {
         Instant end = Instant.now();
         long time = Duration.between(start, end).toMillis();
         System.out.println("Total time, millis = " + time);
-        System.out.println("Path: " + dijkstraParallel.getPath());
+        System.out.print("Path: ");
+        Iterator<Integer> iterator = dijkstraParallel.getPath().descendingIterator();
+        while (iterator.hasNext()) {
+            System.out.print(iterator.next() + " ");
+        }
         return results;
     }
 }

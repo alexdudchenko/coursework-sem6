@@ -72,7 +72,7 @@ public class IOUtils {
         } catch (NumberFormatException e) {
             throw new InvalidInputDataException("Vertices and weights are Integers");
         }
-        return new Graph(source, edges, edgeList);
+        return new Graph(source, numberOfNodes, edgeList);
     }
 
     public static Graph readGraph() throws InvalidInputDataException {
