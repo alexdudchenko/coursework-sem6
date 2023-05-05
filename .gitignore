@@ -38,5 +38,7 @@ build/
 .DS_Store
 
 ### Files ###
-input.txt
-output.txt
+distances.txt
+graph.txt
+test1.txt
+test2.txt

@@ -20,9 +20,25 @@ public class ParallelDijkstraAlgorithmTest {
     public void generateTestMatrixAndSolve() {
         Integer expected = numberOfNodes - 1;
 
-        GraphUtils.generateGraphTestMatrix(numberOfNodes);
-        Graph graph = IOUtils.readGraph();
+        Graph graph = IOUtils.readGraph("test1.txt");
         List<Integer> result = Main.runAndMeasureParallelDijkstra(graph, numberOfThreads);
-        Assert.assertEquals(expected, result.get(result.size() - 1));
+
+        Integer distance = result.get(result.size() - 1);
+        System.out.println("Distance from source vertex to finish: " + distance);
+        Assert.assertEquals(expected, distance);
+    }
+
+    @SneakyThrows
+    @Test
+    public void generateTestMatrixAndSolve2() {
+        Integer expected = 597;
+
+        Graph graph = IOUtils.readGraph("test2.txt");
+        List<Integer> result = Main.runAndMeasureParallelDijkstra(graph, numberOfThreads);
+
+        Integer distance = result.get(result.size() - 1);
+        System.out.println("Distance from source vertex to finish: " + distance);
+
+        Assert.assertEquals(expected, distance);
     }
 }

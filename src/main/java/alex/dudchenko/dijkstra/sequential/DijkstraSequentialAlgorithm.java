@@ -3,6 +3,7 @@ package alex.dudchenko.dijkstra.sequential;
 import alex.dudchenko.dijkstra.DijkstraAlgorithm;
 import alex.dudchenko.model.Graph;
 import alex.dudchenko.model.Vertex;
+import lombok.Getter;
 
 import java.util.*;
 
@@ -12,6 +13,9 @@ public class DijkstraSequentialAlgorithm implements DijkstraAlgorithm {
     private final PriorityQueue<Vertex> queue;
     private final Graph graph;
     private final HashMap<Integer, Integer> distances;
+
+    @Getter
+    private final Deque<Integer> path = new ArrayDeque<>();
 
     public DijkstraSequentialAlgorithm(Graph graph) {
         this.graph = graph;
@@ -35,6 +39,7 @@ public class DijkstraSequentialAlgorithm implements DijkstraAlgorithm {
                 processNeighbours(node);
             }
         }
+        if (!path.contains(graph.getNumberOfNodes() - 1)) path.push(graph.getNumberOfNodes() - 1);
         return new ArrayList<>(distances.values());
     }
 
@@ -45,6 +50,7 @@ public class DijkstraSequentialAlgorithm implements DijkstraAlgorithm {
             if (neighbours.containsKey(i) && !visited.contains(i)) {
                 int newDistance = distances.get(node) + neighbours.get(i).getDistance();
                 if (newDistance < distances.get(i)) {
+                    if (!path.contains(node)) path.push(node);
                     distances.put(i, newDistance);
                     queue.add(new Vertex(i, newDistance));
                 }
