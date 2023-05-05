@@ -4,6 +4,7 @@ import alex.dudchenko.dijkstra.DijkstraAlgorithm;
 import alex.dudchenko.exception.InterruptedRuntimeException;
 import alex.dudchenko.model.Graph;
 import alex.dudchenko.model.Vertex;
+import lombok.Getter;
 
 import java.util.*;
 import java.util.concurrent.CyclicBarrier;
@@ -18,6 +19,8 @@ public class DijkstraParallelAlgorithm implements DijkstraAlgorithm {
     private final AtomicBoolean isFinished;
     private final Vertex currentVertex;
     private final int numberOfThreads;
+    @Getter
+    private final Queue<Integer> path = new ArrayDeque<>();
 
     public DijkstraParallelAlgorithm(Graph graph, int numberOfThreads) {
         this.graph = graph;
@@ -32,6 +35,7 @@ public class DijkstraParallelAlgorithm implements DijkstraAlgorithm {
         distances.put(graph.getSourceNode(), 0);
         isFinished = new AtomicBoolean(false);
         currentVertex = new Vertex(graph.getSourceNode(), 0);
+        path.add(currentVertex.getNode());
     }
 
     @Override
@@ -59,7 +63,8 @@ public class DijkstraParallelAlgorithm implements DijkstraAlgorithm {
     private List<Thread> breakIntoTasks() {
         List<Thread> threads = new ArrayList<>();
 
-        ReduceOperationRunnable reduceOperationRunnable = new ReduceOperationRunnable(queues, isFinished, visited, currentVertex);
+        ReduceOperationRunnable reduceOperationRunnable = new ReduceOperationRunnable(queues, isFinished,
+                visited, currentVertex, path);
         CyclicBarrier cyclicBarrier = new CyclicBarrier(numberOfThreads, reduceOperationRunnable);
         int start;
         int end = 0;
@@ -93,12 +98,15 @@ public class DijkstraParallelAlgorithm implements DijkstraAlgorithm {
         private final AtomicBoolean isFinished;
         private final Set<Integer> visited;
         private final Vertex currentVertex;
+        private final Queue<Integer> path;
 
-        public ReduceOperationRunnable(List<PriorityQueue<Vertex>> queues, AtomicBoolean isFinished, Set<Integer> visited, Vertex currentVertex) {
+        public ReduceOperationRunnable(List<PriorityQueue<Vertex>> queues, AtomicBoolean isFinished,
+                                       Set<Integer> visited, Vertex currentVertex, Queue<Integer> path) {
             this.queues = queues;
             this.isFinished = isFinished;
             this.visited = visited;
             this.currentVertex = currentVertex;
+            this.path = path;
         }
 
         @Override
@@ -123,6 +131,7 @@ public class DijkstraParallelAlgorithm implements DijkstraAlgorithm {
                     visited.add(minVertex.getNode());
                     currentVertex.setNode(minVertex.getNode());
                     currentVertex.setDistance(minVertex.getDistance());
+                    path.add(currentVertex.getNode());
                     queues.get(queueIndex).remove();
                     return;
                 } else {

@@ -9,6 +9,7 @@ import java.util.Random;
 public class GraphUtils {
 
     private static final String FILE_NAME = "graph.txt";
+    private static final String TEST_FILE_NAME = "test.txt";
     private static final Random random = new Random();
     private static final String ZERO = "0";
     private static final String NO_CONNECTION = "-1";
@@ -42,7 +43,7 @@ public class GraphUtils {
     }
 
     public static void generateGraphTestMatrix(int numberOfNodes) throws IOException {
-        File file = new File(FILE_NAME);
+        File file = new File(TEST_FILE_NAME);
         try (BufferedWriter bufferedWriter = Files.newBufferedWriter(file.toPath())) {
             bufferedWriter.append(String.valueOf(numberOfNodes)).append(IOUtils.SPACE_SEPARATOR)
                     .append(String.valueOf(0)).append(System.lineSeparator());
@@ -55,7 +56,11 @@ public class GraphUtils {
                         if (j - i == 1) {
                             bufferedWriter.append(String.valueOf(1)).append(IOUtils.SPACE_SEPARATOR);
                         } else {
-                            bufferedWriter.append(String.valueOf(9999)).append(IOUtils.SPACE_SEPARATOR);
+                            if (random.nextInt(100) > 30) {
+                                bufferedWriter.append(String.valueOf(9999)).append(IOUtils.SPACE_SEPARATOR);
+                            } else {
+                                bufferedWriter.append(String.valueOf(-1)).append(IOUtils.SPACE_SEPARATOR);
+                            }
                         }
                     }
                 }

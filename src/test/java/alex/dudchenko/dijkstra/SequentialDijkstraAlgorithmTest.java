@@ -19,9 +19,12 @@ public class SequentialDijkstraAlgorithmTest {
     public void generateTestMatrixAndSolve() {
         Integer expected = numberOfNodes - 1;
 
-        GraphUtils.generateGraphTestMatrix(numberOfNodes);
-        Graph graph = IOUtils.readGraph();
+        Graph graph = IOUtils.readGraph("test.txt");
         List<Integer> result = Main.runAndMeasureSequentialDijkstra(graph);
-        Assert.assertEquals(expected, result.get(result.size() - 1));
+
+        Integer distance = result.get(result.size() - 1);
+        System.out.println("Distance from source vertex to finish: " + distance);
+
+        Assert.assertEquals(expected, distance);
     }
 }

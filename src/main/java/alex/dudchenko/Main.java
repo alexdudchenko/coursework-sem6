@@ -54,6 +54,7 @@ public class Main {
         Instant end = Instant.now();
         long time = Duration.between(start, end).toMillis();
         System.out.println("Total time, millis = " + time);
+        System.out.println("Path: " + dijkstraSequential.getPath());
         return results;
     }
 
@@ -64,6 +65,7 @@ public class Main {
         Instant end = Instant.now();
         long time = Duration.between(start, end).toMillis();
         System.out.println("Total time, millis = " + time);
+        System.out.println("Path: " + dijkstraParallel.getPath());
         return results;
     }
 }

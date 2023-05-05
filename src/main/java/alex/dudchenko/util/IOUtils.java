@@ -37,11 +37,11 @@ public class IOUtils {
         }
     }
 
-    public static Graph readGraph() throws InvalidInputDataException {
+    public static Graph readGraph(String filename) throws InvalidInputDataException {
         List<Map<Integer, Vertex>> edges = new ArrayList<>();
         int source;
         int numberOfNodes;
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(FILE_NAME))) {
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(filename))) {
             String line = bufferedReader.readLine();
             if (line != null) {
                 String[] params = line.split(SPACE_SEPARATOR);
@@ -67,5 +67,9 @@ public class IOUtils {
             throw new InvalidInputDataException("Vertices and weights are Integers");
         }
         return new Graph(source, edges);
+    }
+
+    public static Graph readGraph() throws InvalidInputDataException {
+        return readGraph(FILE_NAME);
     }
 }
