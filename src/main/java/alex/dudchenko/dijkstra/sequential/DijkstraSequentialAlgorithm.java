@@ -1,6 +1,7 @@
 package alex.dudchenko.dijkstra.sequential;
 
 import alex.dudchenko.dijkstra.DijkstraAlgorithm;
+import alex.dudchenko.model.Edge;
 import alex.dudchenko.model.Graph;
 import alex.dudchenko.model.Vertex;
 import lombok.Getter;
@@ -13,9 +14,8 @@ public class DijkstraSequentialAlgorithm implements DijkstraAlgorithm {
     private final PriorityQueue<Vertex> queue;
     private final Graph graph;
     private final HashMap<Integer, Integer> distances;
-
     @Getter
-    private final Queue<Integer> path = new ArrayDeque<>();
+    private final Deque<Integer> path = new ArrayDeque<>();
 
     public DijkstraSequentialAlgorithm(Graph graph) {
         this.graph = graph;
@@ -34,24 +34,28 @@ public class DijkstraSequentialAlgorithm implements DijkstraAlgorithm {
     public List<Integer> solve() {
         while (!queue.isEmpty()) {
             int node = queue.remove().getNode();
-            path.add(node);
+
             if (!visited.contains(node)) {
                 visited.add(node);
                 processNeighbours(node);
             }
+
         }
         return new ArrayList<>(distances.values());
     }
 
-    private void processNeighbours(int node) {
-        Map<Integer, Vertex> neighbours = graph.getEdges().get(node);
+    private void processNeighbours(Integer node) {
+        for (Edge edge : graph.getEdgesList()) {
+            if (!edge.getFirstNode().equals(node)) continue;
 
-        for (int i = 0; i < graph.getNumberOfNodes(); i++) {
-            if (neighbours.containsKey(i) && !visited.contains(i)) {
-                int newDistance = distances.get(node) + neighbours.get(i).getDistance();
-                if (newDistance < distances.get(i)) {
-                    distances.put(i, newDistance);
-                    queue.add(new Vertex(i, newDistance));
+            Integer second = edge.getSecondNode();
+            if (!visited.contains(second)) {
+                int newDistance = distances.get(node) + edge.getDistance();
+
+                if (newDistance < distances.get(second)) {
+                    if (!path.contains(node)) path.push(node);
+                    distances.put(second, newDistance);
+                    queue.add(new Vertex(second, newDistance));
                 }
             }
         }

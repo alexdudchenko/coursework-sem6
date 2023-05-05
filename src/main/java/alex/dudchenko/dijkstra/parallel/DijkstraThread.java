@@ -1,5 +1,6 @@
 package alex.dudchenko.dijkstra.parallel;
 
+import alex.dudchenko.model.Edge;
 import alex.dudchenko.model.Graph;
 import alex.dudchenko.model.Vertex;
 
@@ -48,15 +49,16 @@ public class DijkstraThread extends Thread {
         }
     }
 
-    private void processNeighbours(int node) {
-        Map<Integer, Vertex> neighbours = graph.getEdges().get(node);
+    private void processNeighbours(Integer node) {
+        for (Edge edge : graph.getEdgesList()) {
+            if (!edge.getFirstNode().equals(node)) continue;
 
-        for (int i = start; i < end; i++) {
-            if (neighbours.containsKey(i) && !visited.contains(i)) {
-                int newDistance = distances.get(node) + neighbours.get(i).getDistance();
-                if (newDistance < distances.get(neighbours.get(i).getNode())) {
-                    distances.put(neighbours.get(i).getNode(), newDistance);
-                    localQueue.add(new Vertex(i, newDistance));
+            Integer second = edge.getSecondNode();
+            if (!visited.contains(second)) {
+                int newDistance = distances.get(node) + edge.getDistance();
+
+                if (newDistance < distances.get(second)) {
+                    distances.put(second, newDistance);
                 }
             }
         }

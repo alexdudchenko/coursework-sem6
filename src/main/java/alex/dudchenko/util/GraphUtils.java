@@ -9,7 +9,7 @@ import java.util.Random;
 public class GraphUtils {
 
     private static final String FILE_NAME = "graph.txt";
-    private static final String TEST_FILE_NAME = "test.txt";
+    private static final String TEST_FILE_NAME = "test1.txt";
     private static final Random random = new Random();
     private static final String ZERO = "0";
     private static final String NO_CONNECTION = "-1";

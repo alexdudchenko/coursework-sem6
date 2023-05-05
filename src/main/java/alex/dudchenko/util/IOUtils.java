@@ -1,5 +1,6 @@
 package alex.dudchenko.util;
 
+import alex.dudchenko.model.Edge;
 import alex.dudchenko.model.Graph;
 import alex.dudchenko.exception.InvalidInputDataException;
 import alex.dudchenko.model.Vertex;
@@ -39,6 +40,8 @@ public class IOUtils {
 
     public static Graph readGraph(String filename) throws InvalidInputDataException {
         List<Map<Integer, Vertex>> edges = new ArrayList<>();
+        List<Edge> edgeList = new ArrayList<>();
+
         int source;
         int numberOfNodes;
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(filename))) {
@@ -50,6 +53,7 @@ public class IOUtils {
             } else {
                 throw new InvalidInputDataException("Provide the number of vertices");
             }
+            int j = 0;
             while ((line = bufferedReader.readLine()) != null) {
                 Map<Integer, Vertex> row = new HashMap<>(numberOfNodes);
                 String[] params = line.split(SPACE_SEPARATOR);
@@ -57,16 +61,18 @@ public class IOUtils {
                     int val = Integer.parseInt(params[i]);
                     if (val > 0) {
                         row.put(i, new Vertex(i, val));
+                        edgeList.add(new Edge(j, i, val));
                     }
                 }
                 edges.add(row);
+                j++;
             }
         } catch (IOException e) {
             throw new InvalidInputDataException(e.getMessage());
         } catch (NumberFormatException e) {
             throw new InvalidInputDataException("Vertices and weights are Integers");
         }
-        return new Graph(source, edges);
+        return new Graph(source, edges, edgeList);
     }
 
     public static Graph readGraph() throws InvalidInputDataException {

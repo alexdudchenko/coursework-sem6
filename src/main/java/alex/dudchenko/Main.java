@@ -10,6 +10,7 @@ import alex.dudchenko.util.IOUtils;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Iterator;
 import java.util.List;
 
 public class Main {
@@ -54,7 +55,12 @@ public class Main {
         Instant end = Instant.now();
         long time = Duration.between(start, end).toMillis();
         System.out.println("Total time, millis = " + time);
-        System.out.println("Path: " + dijkstraSequential.getPath());
+        System.out.print("Path: ");
+        Iterator<Integer> iterator = dijkstraSequential.getPath().descendingIterator();
+        while (iterator.hasNext()) {
+            System.out.print(iterator.next() + " ");
+        }
+        System.out.println();
         return results;
     }
 
