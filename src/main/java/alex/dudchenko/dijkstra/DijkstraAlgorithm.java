@@ -5,4 +5,6 @@ import java.util.List;
 public interface DijkstraAlgorithm {
 
     List<Integer> solve();
+
+    void showPath(int destinationVertex);
 }

@@ -13,9 +13,7 @@ public class DijkstraSequentialAlgorithm implements DijkstraAlgorithm {
     private final PriorityQueue<Vertex> queue;
     private final Graph graph;
     private final HashMap<Integer, Integer> distances;
-
-    @Getter
-    private final Deque<Integer> path = new ArrayDeque<>();
+    final int[] parents;
 
     public DijkstraSequentialAlgorithm(Graph graph) {
         this.graph = graph;
@@ -28,6 +26,9 @@ public class DijkstraSequentialAlgorithm implements DijkstraAlgorithm {
         }
         queue.add(new Vertex(graph.getSourceNode(), 0));
         distances.put(graph.getSourceNode(), 0);
+
+        parents = new int[graph.getNumberOfNodes()];
+        parents[0] = -1;
     }
 
     @Override
@@ -39,7 +40,6 @@ public class DijkstraSequentialAlgorithm implements DijkstraAlgorithm {
                 processNeighbours(node);
             }
         }
-        if (!path.contains(graph.getNumberOfNodes() - 1)) path.push(graph.getNumberOfNodes() - 1);
         return new ArrayList<>(distances.values());
     }
 
@@ -50,11 +50,21 @@ public class DijkstraSequentialAlgorithm implements DijkstraAlgorithm {
             if (neighbours.containsKey(i)) {
                 int newDistance = distances.get(node) + neighbours.get(i).getDistance();
                 if (newDistance < distances.get(i)) {
-                    if (!path.contains(node)) path.push(node);
+                    if (i != 0) {
+                        parents[i] = node;
+                    }
                     distances.put(i, newDistance);
                     queue.add(new Vertex(i, newDistance));
                 }
             }
         }
+    }
+
+    public void showPath(int destinationVertex) {
+        if (destinationVertex == -1) {
+            return;
+        }
+        showPath(parents[destinationVertex]);
+        System.out.print(destinationVertex + " ");
     }
 }

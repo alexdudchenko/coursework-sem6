@@ -57,11 +57,7 @@ public class Main {
         System.out.println("Total time, millis = " + time);
 
         System.out.print("Path: ");
-
-        Iterator<Integer> iterator = dijkstraSequential.getPath().descendingIterator();
-        while (iterator.hasNext()) {
-            System.out.print(iterator.next() + " ");
-        }
+        dijkstraSequential.showPath(graph.getNumberOfNodes() - 1);
         System.out.println();
         return results;
     }
@@ -74,11 +70,7 @@ public class Main {
         long time = Duration.between(start, end).toMillis();
         System.out.println("Total time, millis = " + time);
         System.out.print("Path: ");
-
-        Iterator<Integer> iterator = dijkstraParallel.getPath().descendingIterator();
-        while (iterator.hasNext()) {
-            System.out.print(iterator.next() + " ");
-        }
+        dijkstraParallel.showPath(graph.getNumberOfNodes() - 1);
         System.out.println();
         return results;
     }
