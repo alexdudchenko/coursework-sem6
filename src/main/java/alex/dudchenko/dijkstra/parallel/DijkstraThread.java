@@ -55,7 +55,7 @@ public class DijkstraThread extends Thread {
         Map<Integer, Vertex> neighbours = graph.getEdges().get(node);
 
         for (int i = start; i < end; i++) {
-            if (neighbours.containsKey(i) && !visited.contains(i)) {
+            if (neighbours.containsKey(i)) {
                 int newDistance = distances.get(node) + neighbours.get(i).getDistance();
                 if (newDistance < distances.get(neighbours.get(i).getNode())) {
                     synchronized (path) {

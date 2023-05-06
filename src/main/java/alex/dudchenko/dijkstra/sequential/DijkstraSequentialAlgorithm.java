@@ -47,7 +47,7 @@ public class DijkstraSequentialAlgorithm implements DijkstraAlgorithm {
         Map<Integer, Vertex> neighbours = graph.getEdges().get(node);
 
         for (int i = 0; i < graph.getNumberOfNodes(); i++) {
-            if (neighbours.containsKey(i) && !visited.contains(i)) {
+            if (neighbours.containsKey(i)) {
                 int newDistance = distances.get(node) + neighbours.get(i).getDistance();
                 if (newDistance < distances.get(i)) {
                     if (!path.contains(node)) path.push(node);
