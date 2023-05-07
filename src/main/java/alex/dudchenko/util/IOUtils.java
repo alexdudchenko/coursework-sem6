@@ -39,7 +39,6 @@ public class IOUtils {
     }
 
     public static Graph readGraph(String filename) throws InvalidInputDataException {
-        List<Map<Integer, Vertex>> edges = new ArrayList<>();
         List<Edge> edgeList = new ArrayList<>();
 
         int source;
@@ -55,16 +54,13 @@ public class IOUtils {
             }
             int j = 0;
             while ((line = bufferedReader.readLine()) != null) {
-                Map<Integer, Vertex> row = new HashMap<>(numberOfNodes);
                 String[] params = line.split(SPACE_SEPARATOR);
                 for (int i = 0; i < params.length; i++) {
                     int val = Integer.parseInt(params[i]);
                     if (val > 0) {
-                        row.put(i, new Vertex(i, val));
                         edgeList.add(new Edge(j, i, val));
                     }
                 }
-                edges.add(row);
                 j++;
             }
         } catch (IOException e) {

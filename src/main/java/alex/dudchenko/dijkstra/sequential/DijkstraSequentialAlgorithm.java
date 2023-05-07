@@ -15,7 +15,7 @@ public class DijkstraSequentialAlgorithm implements DijkstraAlgorithm {
     private final Graph graph;
     private final HashMap<Integer, Integer> distances;
     @Getter
-    private final Deque<Integer> path = new ArrayDeque<>();
+    private final int[] path;
 
     public DijkstraSequentialAlgorithm(Graph graph) {
         this.graph = graph;
@@ -28,6 +28,9 @@ public class DijkstraSequentialAlgorithm implements DijkstraAlgorithm {
         }
         queue.add(new Vertex(graph.getSourceNode(), 0));
         distances.put(graph.getSourceNode(), 0);
+
+        path = new int[graph.getNumberOfNodes()];
+        path[0] = -1;
     }
 
     @Override
@@ -41,7 +44,6 @@ public class DijkstraSequentialAlgorithm implements DijkstraAlgorithm {
             }
 
         }
-        if (!path.contains(graph.getNumberOfNodes() - 1)) path.push(graph.getNumberOfNodes() - 1);
         return new ArrayList<>(distances.values());
     }
 
@@ -50,15 +52,24 @@ public class DijkstraSequentialAlgorithm implements DijkstraAlgorithm {
             if (!edge.getFirstNode().equals(node)) continue;
 
             Integer second = edge.getSecondNode();
-            if (!visited.contains(second)) {
-                int newDistance = distances.get(node) + edge.getDistance();
+            int newDistance = distances.get(node) + edge.getDistance();
 
-                if (newDistance < distances.get(second)) {
-                    if (!path.contains(node)) path.push(node);
-                    distances.put(second, newDistance);
-                    queue.add(new Vertex(second, newDistance));
+            if (newDistance < distances.get(second)) {
+                if (!edge.getSecondNode().equals(0)) {
+                    path[edge.getSecondNode()] = node;
                 }
+                distances.put(second, newDistance);
+                queue.add(new Vertex(second, newDistance));
             }
+
         }
+    }
+
+    public void showPath(int destinationVertex) {
+        if (destinationVertex == -1) {
+            return;
+        }
+        showPath(path[destinationVertex]);
+        System.out.print(destinationVertex + " ");
     }
 }

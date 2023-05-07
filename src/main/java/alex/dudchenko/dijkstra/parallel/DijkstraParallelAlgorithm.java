@@ -21,7 +21,7 @@ public class DijkstraParallelAlgorithm implements DijkstraAlgorithm {
     private final Vertex currentVertex;
     private final int numberOfThreads;
     @Getter
-    private final Deque<Integer> path = new ArrayDeque<>();
+    private final int[] path;
 
     public DijkstraParallelAlgorithm(Graph graph, int numberOfThreads) {
         this.graph = graph;
@@ -36,7 +36,8 @@ public class DijkstraParallelAlgorithm implements DijkstraAlgorithm {
         distances.put(graph.getSourceNode(), 0);
         isFinished = new AtomicBoolean(false);
         currentVertex = new Vertex(graph.getSourceNode(), 0);
-        path.add(currentVertex.getNode());
+        path = new int[graph.getNumberOfNodes()];
+        path[0] = -1;
     }
 
     @Override
@@ -59,7 +60,6 @@ public class DijkstraParallelAlgorithm implements DijkstraAlgorithm {
             }
         }
 
-        if (!path.contains(graph.getNumberOfNodes() - 1)) path.push(graph.getNumberOfNodes() - 1);
         return new LinkedList<>(distances.values());
     }
 
@@ -94,6 +94,14 @@ public class DijkstraParallelAlgorithm implements DijkstraAlgorithm {
             threads.add(dijThread);
         }
         return threads;
+    }
+
+    public void showPath(int destinationVertex) {
+        if (destinationVertex == -1) {
+            return;
+        }
+        showPath(path[destinationVertex]);
+        System.out.print(destinationVertex + " ");
     }
 
     public static class ReduceOperationRunnable implements Runnable {

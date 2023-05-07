@@ -19,11 +19,11 @@ public class DijkstraThread extends Thread {
     private final Map<Integer, Integer> distances;
     private final AtomicBoolean isFinished;
     private final Vertex currentVertex;
-    private final Deque<Integer> path;
+    private final int[] path;
     private final List<Edge> edges;
 
     public DijkstraThread(GraphPieceDto dto, CyclicBarrier cyclicBarrier, PriorityQueue<Vertex> localQueue,
-                          Map<Integer, Integer> distances, AtomicBoolean isFinished, Deque<Integer> path, List<Edge> edges) {
+                          Map<Integer, Integer> distances, AtomicBoolean isFinished, int[] path, List<Edge> edges) {
         this.graph = dto.getGraph();
         this.visited = dto.getVisited();
         this.currentVertex = dto.getCurrentVertex();
@@ -56,7 +56,9 @@ public class DijkstraThread extends Thread {
                 int newDistance = distances.get(node) + edge.getDistance();
 
                 if (newDistance < distances.get(second)) {
-                    if (!path.contains(node)) path.push(node);
+                    if (!edge.getSecondNode().equals(0)) {
+                        path[edge.getSecondNode()] = node;
+                    }
                     distances.put(second, newDistance);
                     localQueue.add(new Vertex(second, newDistance));
                 }
